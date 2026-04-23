@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AmazingSubz – Cheap Data & Airtime Nigeria</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0a0f0a;--card:#111811;--card2:#162016;
+  --green:#22c55e;--green2:#16a34a;--green-glow:rgba(34,197,94,0.18);
+  --text:#f0fff4;--muted:#6b7c6b;--border:#1e2e1e;
+  --red:#ff5252;--yellow:#fbbf24;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+h1,h2,h3,.brand{font-family:'Syne',sans-serif}
+
+/* ── NAV ── */
+nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:rgba(10,15,10,0.95);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.brand{font-size:1.3rem;font-weight:800;color:var(--text)}
+.brand span{color:var(--green)}
+.nav-right{display:flex;gap:10px;align-items:center}
+#walletBadge{display:none;background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:0.82rem;color:var(--green);font-weight:600}
+.btn{padding:9px 20px;border-radius:25px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;transition:all .2s}
+.btn-green{background:var(--green);color:#000}
+.btn-green:hover{background:var(--green2)}
+.btn-outline{background:transparent;border:1px solid var(--green);color:var(--green)}
+.btn-outline:hover{background:var(--green-glow)}
+.btn-sm{padding:7px 14px;font-size:0.82rem}
+
+/* ── PAGES ── */
+.page{display:none;min-height:calc(100vh - 60px);padding:0 0 80px}
+.page.active{display:block}
+
+/* ── HERO ── */
+#heroPage{text-align:center;padding:0 20px 80px}
+.hero-badge{display:inline-block;background:var(--green-glow);border:1px solid var(--green);color:var(--green);padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:600;letter-spacing:.08em;margin:30px 0 18px}
+.hero h1{font-size:2.4rem;line-height:1.1;margin-bottom:12px}
+.hero h1 .highlight{color:var(--green);display:block}
+.hero p{color:var(--muted);font-size:0.95rem;max-width:320px;margin:0 auto 28px}
+.stats-row{display:flex;justify-content:center;gap:30px;margin-bottom:30px}
+.stat-item strong{display:block;font-family:'Syne',sans-serif;font-size:1.3rem}
+.stat-item span{color:var(--muted);font-size:0.78rem}
+
+/* ── BUY CARD ── */
+.buy-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;margin:0 auto;max-width:420px}
+.section-label{font-size:0.72rem;letter-spacing:.1em;color:var(--muted);font-weight:600;margin-bottom:10px;text-transform:uppercase}
+.network-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.net-btn{background:var(--card2);border:2px solid var(--border);border-radius:10px;padding:10px 4px;cursor:pointer;transition:all .2s;text-align:center}
+.net-btn.active{border-color:var(--green);background:var(--green-glow)}
+.net-btn .net-icon{width:32px;height:32px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.7rem;color:#fff}
+.net-btn .net-label{font-size:0.7rem;color:var(--muted)}
+.mtn-c{background:#fbbf24;color:#000!important}
+.airtel-c{background:#ef4444}
+.glo-c{background:#22c55e}
+.mobile9-c{background:#3b82f6}
+.type-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:18px}
+.type-tab{padding:8px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;border-radius:8px;cursor:pointer;transition:all .2s}
+.type-tab.active{background:var(--green);color:#000}
+.input-group{margin-bottom:14px}
+.input-group label{display:block;font-size:0.72rem;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:6px;text-transform:uppercase}
+.inp{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;transition:border .2s}
+.inp:focus{border-color:var(--green)}
+.inp::placeholder{color:var(--muted)}
+.amount-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.amt-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px 4px;cursor:pointer;font-size:0.88rem;font-weight:600;color:var(--text);transition:all .2s;text-align:center}
+.amt-btn.active,.amt-btn:hover{border-color:var(--green);background:var(--green-glow);color:var(--green)}
+.plan-select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none}
+.plan-select option{background:var(--card)}
+.cta-btn{width:100%;padding:14px;border-radius:12px;border:none;background:var(--green);color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all .2s;margin-top:6px}
+.cta-btn:hover{background:var(--green2);transform:translateY(-1px)}
+.cta-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* ── WHY SECTION ── */
+.why-section{padding:0 20px;margin-top:30px}
+.why-section h2{font-size:1.5rem;margin-bottom:16px}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.why-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.why-card h3{font-size:0.95rem;margin-bottom:4px}
+.why-card p{color:var(--muted);font-size:0.8rem}
+
+/* ── AUTH PAGE ── */
+#authPage{padding:30px 20px}
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;max-width:400px;margin:0 auto}
+.auth-card h2{text-align:center;margin-bottom:6px}
+.auth-card .sub{text-align:center;color:var(--muted);font-size:0.88rem;margin-bottom:22px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:22px}
+.auth-tab{padding:9px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.88rem;border-radius:8px;cursor:pointer;transition:all .2s}
+.auth-tab.active{background:var(--green);color:#000}
+
+/* ── DASHBOARD ── */
+#dashPage{padding:20px}
+.wallet-card{background:linear-gradient(135deg,#162016,#0f1f0f);border:1px solid var(--green);border-radius:18px;padding:22px;margin-bottom:20px}
+.wallet-label{font-size:0.78rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.wallet-amount{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--green);margin-bottom:14px}
+.wallet-actions{display:flex;gap:10px}
+.dash-section{margin-bottom:22px}
+.dash-section h3{font-size:1rem;margin-bottom:12px;color:var(--muted);font-family:'Syne',sans-serif}
+.txn-list{display:flex;flex-direction:column;gap:8px}
+.txn-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.txn-desc{font-size:0.88rem}
+.txn-date{color:var(--muted);font-size:0.75rem;margin-top:2px}
+.txn-amt{font-weight:700;font-size:0.9rem}
+.txn-amt.credit{color:var(--green)}
+.txn-amt.debit{color:var(--red)}
+.status-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600}
+.status-badge.success{background:rgba(34,197,94,0.15);color:var(--green)}
+.status-badge.pending{background:rgba(251,191,36,0.15);color:var(--yellow)}
+.status-badge.failed{background:rgba(255,82,82,0.15);color:var(--red)}
+
+/* ── FUND MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:flex-end;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-sheet{background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:480px}
+.modal-sheet h3{margin-bottom:16px;font-size:1.1rem}
+.modal-close{float:right;background:var(--card2);border:none;color:var(--muted);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:1rem}
+
+/* ── ADMIN ── */
+#adminPage{padding:20px}
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.admin-stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.admin-stat .lbl{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.admin-stat .val{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--green);margin-top:4px}
+.admin-orders{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.admin-orders-header{padding:14px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:0.9rem}
+.order-row{padding:12px 16px;border-bottom:1px solid var(--border);font-size:0.82rem}
+.order-row:last-child{border:none}
+.order-row .order-top{display:flex;justify-content:space-between;margin-bottom:3px}
+.order-row .order-sub{color:var(--muted);font-size:0.75rem}
+
+/* ── BOTTOM NAV ── */
+#bottomNav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:8px 0 12px;z-index:100}
+.bnav{display:flex;justify-content:space-around}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 12px;border-radius:10px;transition:all .2s}
+.bnav-item.active .bnav-icon,.bnav-item:hover .bnav-icon{color:var(--green)}
+.bnav-item.active .bnav-label{color:var(--green)}
+.bnav-icon{font-size:1.3rem}
+.bnav-label{font-size:0.65rem;color:var(--muted);font-weight:500}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#22c55e;color:#000;padding:10px 22px;border-radius:25px;font-weight:600;font-size:0.88rem;opacity:0;transition:all .3s;z-index:300;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.error{background:var(--red);color:#fff}
+
+/* ── ORDERS PAGE ── */
+#ordersPage{padding:20px}
+#ordersPage h2{font-size:1.3rem;margin-bottom:16px;font-family:'Syne',sans-serif}
+.orders-list{display:flex;flex-direction:column;gap:10px}
+.order-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+.order-card-top{display:flex;justify-content:space-between;align-items:start;margin-bottom:6px}
+.order-card-title{font-weight:600;font-size:0.92rem}
+.order-card-sub{color:var(--muted);font-size:0.78rem;margin-top:2px}
+.order-card-amt{font-family:'Syne',sans-serif;font-weight:700;color:var(--green)}
+
+/* ── SERVICES PAGE ── */
+#servicesPage{padding:24px 20px 80px}
+.services-hero{text-align:center;margin-bottom:28px}
+.services-hero h2{font-size:1.8rem;margin-bottom:8px}
+.services-hero p{color:var(--muted);font-size:0.9rem;max-width:320px;margin:0 auto}
+.service-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color .2s}
+.service-card:hover{border-color:var(--green)}
+.service-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:0 18px 0 80px;opacity:.06}
+.service-card.web::before{background:var(--green)}
+.service-card.app::before{background:#3b82f6}
+.service-card.design::before{background:#f59e0b}
+.service-card.marketing::before{background:#ec4899}
+.service-icon{font-size:2rem;margin-bottom:10px;display:block}
+.service-card h3{font-size:1.05rem;margin-bottom:6px}
+.service-card p{color:var(--muted);font-size:0.83rem;line-height:1.5;margin-bottom:14px}
+.service-features{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.service-tag{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:0.72rem;color:var(--muted)}
+.service-price{font-family:'Syne',sans-serif;font-size:0.88rem;color:var(--green);font-weight:700;margin-bottom:12px}
+.service-cta{width:100%;padding:11px;border-radius:10px;border:1px solid var(--green);background:transparent;color:var(--green);font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.88rem;cursor:pointer;transition:all .2s}
+.service-cta:hover{background:var(--green);color:#000}
+
+/* ── SERVICE MODAL ── */
+#serviceModal .modal-sheet{max-height:80vh;overflow-y:auto}
+.service-modal-icon{font-size:2.5rem;text-align:center;margin-bottom:8px}
+.service-modal-title{text-align:center;font-size:1.2rem;margin-bottom:4px}
+.service-modal-sub{text-align:center;color:var(--muted);font-size:0.85rem;margin-bottom:20px}
+.service-form .input-group{margin-bottom:12px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:360px){.hero h1{font-size:2rem}.amount-grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="brand">Amazing<span>Subz</span></div>
+  <div class="nav-right">
+    <div id="walletBadge">₦<span id="navWallet">0</span></div>
+    <button class="btn btn-green btn-sm" id="authBtn" onclick="showPage('authPage')">Sign In</button>
+    <button class="btn btn-outline btn-sm" id="logoutBtn" style="display:none" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<!-- PAGES -->
+
+<!-- HOME -->
+<div id="heroPage" class="page active">
+  <div class="hero">
+    <div class="hero-badge">🇳🇬 NIGERIA CHEAPEST RATES</div>
+    <h1>Buy Airtime & Data<span class="highlight">Instant Delivery!</span></h1>
+    <p>MTN, Airtel, Glo & 9mobile at the cheapest prices. Fund wallet once, buy anytime!</p>
+    <div class="stats-row">
+      <div class="stat-item"><strong>50K+</strong><span>Customers</span></div>
+      <div class="stat-item"><strong>₦0</strong><span>Hidden Fees</span></div>
+      <div class="stat-item"><strong>5sec</strong><span>Delivery</span></div>
+    </div>
+  </div>
+
+  <!-- BUY CARD -->
+  <div class="buy-card">
+    <div class="section-label">Select Network</div>
+    <div class="network-grid">
+      <div class="net-btn active" onclick="selectNetwork('MTN',this)">
+        <div class="net-icon mtn-c">MTN</div>
+        <div class="net-label">MTN</div>
+      </div>
+      <div class="net-btn" onclick="selectNetwork('Airtel',this)">
+        <div class="net-icon airtel-c">AIR</div>
+        <div class="net-label">Airtel</div>
+      </div>
+      <div class="net-btn" onclick="selectNetwork('Glo',this)">
+        <div class="net-icon glo-c">GLO</div>
+        <div class="net-label">Glo</div>
+      </div>
+      <div class="net-btn" onclick="selectNetwork('9mobile',this)">
+        <div class="net-icon mobile9-c">9MB</div>
+        <div class="net-label">9mobile</div>
+      </div>
+    </div>
+
+    <div class="type-tabs">
+      <button class="type-tab active" onclick="switchType('airtime',this)">Airtime</button>
+      <button class="type-tab" onclick="switchType('data',this)">Data</button>
+    </div>
+
+    <!-- AIRTIME PANEL -->
+    <div id="airtimePanel">
+      <div class="input-group">
+        <label>Phone Number</label>
+        <input class="inp" id="airtimePhone" type="tel" placeholder="0800 000 0000" maxlength="11"/>
+      </div>
+      <div class="section-label" style="margin-bottom:8px">Choose Amount</div>
+      <div class="amount-grid">
+        <div class="amt-btn" onclick="selectAmt(100,this)">₦100</div>
+        <div class="amt-btn active" onclick="selectAmt(200,this)">₦200</div>
+        <div class="amt-btn" onclick="selectAmt(500,this)">₦500</div>
+        <div class="amt-btn" onclick="selectAmt(1000,this)">₦1,000</div>
+        <div class="amt-btn" onclick="selectAmt(2000,this)">₦2,000</div>
+        <div class="amt-btn" onclick="selectAmt(5000,this)">₦5,000</div>
+      </div>
+      <div class="input-group">
+        <label>Or Custom Amount</label>
+        <input class="inp" id="customAmt" type="number" placeholder="₦ Min ₦50" min="50" oninput="customAmount(this.value)"/>
+      </div>
+      <button class="cta-btn" onclick="buyAirtime()">Buy Airtime Now</button>
+    </div>
+
+    <!-- DATA PANEL -->
+    <div id="dataPanel" style="display:none">
+      <div class="input-group">
+        <label>Phone Number</label>
+        <input class="inp" id="dataPhone" type="tel" placeholder="0800 000 0000" maxlength="11"/>
+      </div>
+      <div class="input-group">
+        <label>Select Data Plan</label>
+        <select class="plan-select" id="planSelect" onchange="planChanged(this)">
+          <option value="">-- Loading plans... --</option>
+        </select>
+      </div>
+      <button class="cta-btn" onclick="buyData()">Buy Data Now</button>
+    </div>
+  </div>
+
+  <!-- WHY SECTION -->
+  <div class="why-section">
+    <h2>Why Choose AmazingSubz?</h2>
+    <div class="why-grid">
+      <div class="why-card"><h3>🏆 Best Prices</h3><p>Cheapest rates in Nigeria.</p></div>
+      <div class="why-card"><h3>⚡ Instant</h3><p>Delivered in 5 seconds.</p></div>
+      <div class="why-card"><h3>🤝 Earn Referrals</h3><p>₦50 per friend you refer.</p></div>
+      <div class="why-card"><h3>👛 Wallet System</h3><p>Fund once, buy anytime.</p></div>
+    </div>
+  </div>
+
+  <!-- SERVICES TEASER -->
+  <div class="why-section" style="margin-top:24px">
+    <h2>Our Other Services</h2>
+    <div class="why-grid">
+      <div class="why-card" onclick="showServicesPage()" style="cursor:pointer">
+        <h3>🌐 Web Design</h3><p>Professional websites from ₦25,000</p>
+      </div>
+      <div class="why-card" onclick="showServicesPage()" style="cursor:pointer">
+        <h3>📱 App Dev</h3><p>Android & iOS apps from ₦80,000</p>
+      </div>
+      <div class="why-card" onclick="showServicesPage()" style="cursor:pointer">
+        <h3>🎨 Graphics</h3><p>Logos & designs from ₦5,000</p>
+      </div>
+      <div class="why-card" onclick="showServicesPage()" style="cursor:pointer">
+        <h3>📣 Marketing</h3><p>Grow your brand online</p>
+      </div>
+    </div>
+    <button class="cta-btn" onclick="showServicesPage()" style="margin-top:14px;max-width:300px;margin-left:auto;margin-right:auto;display:block">View All Services →</button>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div id="servicesPage" class="page">
+  <div class="services-hero">
+    <div class="hero-badge">💼 PROFESSIONAL SERVICES</div>
+    <h2>We Do More Than Data</h2>
+    <p>Top-quality digital services to grow your business online</p>
+  </div>
+
+  <!-- Web Design -->
+  <div class="service-card web">
+    <span class="service-icon">🌐</span>
+    <h3>Web Design & Development</h3>
+    <p>Beautiful, fast websites and web apps built for Nigerian businesses. Mobile-first, SEO-ready, and professionally designed.</p>
+    <div class="service-features">
+      <span class="service-tag">Landing Pages</span>
+      <span class="service-tag">E-commerce</span>
+      <span class="service-tag">Portfolios</span>
+      <span class="service-tag">Web Apps</span>
+      <span class="service-tag">WordPress</span>
+    </div>
+    <div class="service-price">Starting from ₦25,000</div>
+    <button class="service-cta" onclick="openServiceModal('web')">Get a Quote →</button>
+  </div>
+
+  <!-- App Development -->
+  <div class="service-card app">
+    <span class="service-icon">📱</span>
+    <h3>App Development</h3>
+    <p>Android and iOS mobile apps for your business. From simple utility apps to full VTU platforms like this one.</p>
+    <div class="service-features">
+      <span class="service-tag">Android Apps</span>
+      <span class="service-tag">iOS Apps</span>
+      <span class="service-tag">VTU Apps</span>
+      <span class="service-tag">Business Apps</span>
+      <span class="service-tag">React Native</span>
+    </div>
+    <div class="service-price">Starting from ₦80,000</div>
+    <button class="service-cta" onclick="openServiceModal('app')">Get a Quote →</button>
+  </div>
+
+  <!-- Graphic Design -->
+  <div class="service-card design">
+    <span class="service-icon">🎨</span>
+    <h3>Graphic Design</h3>
+    <p>Professional designs that make your brand stand out. Logos, flyers, banners, social media graphics and more.</p>
+    <div class="service-features">
+      <span class="service-tag">Logo Design</span>
+      <span class="service-tag">Flyers</span>
+      <span class="service-tag">Brand Identity</span>
+      <span class="service-tag">Social Media</span>
+      <span class="service-tag">Banners</span>
+    </div>
+    <div class="service-price">Starting from ₦5,000</div>
+    <button class="service-cta" onclick="openServiceModal('design')">Get a Quote →</button>
+  </div>
+
+  <!-- Digital Marketing -->
+  <div class="service-card marketing">
+    <span class="service-icon">📣</span>
+    <h3>Digital Marketing</h3>
+    <p>Grow your business with targeted marketing. Social media management, paid ads, and content strategy.</p>
+    <div class="service-features">
+      <span class="service-tag">Social Media Mgt</span>
+      <span class="service-tag">Facebook Ads</span>
+      <span class="service-tag">Google Ads</span>
+      <span class="service-tag">SEO</span>
+      <span class="service-tag">Content Creation</span>
+    </div>
+    <div class="service-price">Starting from ₦15,000/month</div>
+    <button class="service-cta" onclick="openServiceModal('marketing')">Get a Quote →</button>
+  </div>
+
+  <!-- WhatsApp CTA -->
+  <div style="background:linear-gradient(135deg,#162016,#0f1f0f);border:1px solid var(--green);border-radius:18px;padding:22px;text-align:center;margin-top:6px">
+    <div style="font-size:1.8rem;margin-bottom:8px">💬</div>
+    <h3 style="margin-bottom:6px">Talk to Us Directly</h3>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:16px">Not sure what you need? Chat with us on WhatsApp and we'll help you figure it out.</p>
+    <button class="cta-btn" onclick="openWA()" style="max-width:260px;margin:0 auto;display:block">Chat on WhatsApp</button>
+  </div>
+</div>
+
+<!-- SERVICE QUOTE MODAL -->
+<div class="modal-overlay" id="serviceModal">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeServiceModal()">✕</button>
+    <div class="service-modal-icon" id="sModalIcon">🌐</div>
+    <div class="service-modal-title" id="sModalTitle">Web Design Quote</div>
+    <div class="service-modal-sub" id="sModalSub">Tell us about your project</div>
+    <div class="service-form">
+      <div class="input-group"><label>Your Name</label><input class="inp" id="sName" placeholder="Full name"/></div>
+      <div class="input-group"><label>WhatsApp Number</label><input class="inp" id="sPhone" type="tel" placeholder="08012345678"/></div>
+      <div class="input-group"><label>Project Description</label><textarea class="inp" id="sDesc" rows="3" placeholder="Tell us what you need..." style="resize:none;line-height:1.5"></textarea></div>
+      <div class="input-group"><label>Budget Range</label>
+        <select class="plan-select" id="sBudget">
+          <option value="">Select budget range</option>
+          <option>Under ₦10,000</option>
+          <option>₦10,000 – ₦50,000</option>
+          <option>₦50,000 – ₦150,000</option>
+          <option>₦150,000 – ₦500,000</option>
+          <option>Above ₦500,000</option>
+        </select>
+      </div>
+      <button class="cta-btn" onclick="sendServiceQuote()">Send via WhatsApp 💬</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="authPage" class="page">
+  <div class="auth-card">
+    <h2>Welcome Back 👋</h2>
+    <p class="sub">Sign in or create your account</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="showAuthTab('login',this)">Login</button>
+      <button class="auth-tab" onclick="showAuthTab('register',this)">Register</button>
+    </div>
+
+    <div id="loginForm">
+      <div class="input-group"><label>Email</label><input class="inp" id="loginEmail" type="email" placeholder="your@email.com"/></div>
+      <div class="input-group"><label>Password</label><input class="inp" id="loginPass" type="password" placeholder="••••••••"/></div>
+      <button class="cta-btn" onclick="doLogin()">Login</button>
+    </div>
+
+    <div id="registerForm" style="display:none">
+      <div class="input-group"><label>Full Name</label><input class="inp" id="regName" placeholder="John Doe"/></div>
+      <div class="input-group"><label>Email</label><input class="inp" id="regEmail" type="email" placeholder="your@email.com"/></div>
+      <div class="input-group"><label>Phone</label><input class="inp" id="regPhone" type="tel" placeholder="08012345678"/></div>
+      <div class="input-group"><label>Password</label><input class="inp" id="regPass" type="password" placeholder="Min 6 characters"/></div>
+      <div class="input-group"><label>Referral Code (optional)</label><input class="inp" id="regRef" placeholder="Enter referral code"/></div>
+      <button class="cta-btn" onclick="doRegister()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashPage" class="page">
+  <div class="wallet-card">
+    <div class="wallet-label">Wallet Balance</div>
+    <div class="wallet-amount">₦<span id="walletAmt">0.00</span></div>
+    <div class="wallet-actions">
+      <button class="btn btn-green btn-sm" onclick="openFund()">+ Fund Wallet</button>
+      <button class="btn btn-outline btn-sm" onclick="copyReferral()">📋 Copy Referral</button>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <h3>Recent Transactions</h3>
+    <div class="txn-list" id="txnList"><p style="color:var(--muted);text-align:center;padding:20px">Loading...</p></div>
+  </div>
+</div>
+
+<!-- ORDERS -->
+<div id="ordersPage" class="page">
+  <h2>My Orders</h2>
+  <div class="orders-list" id="ordersList"><p style="color:var(--muted);text-align:center;padding:30px">Loading...</p></div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminPage" class="page">
+  <div id="adminLogin" style="padding:20px">
+    <div class="auth-card">
+      <h2>Admin Panel 🔐</h2>
+      <p class="sub">Enter admin password to continue</p>
+      <div class="input-group" style="margin-top:16px"><label>Password</label><input class="inp" id="adminPassInput" type="password" placeholder="Admin password"/></div>
+      <button class="cta-btn" onclick="loadAdmin()">Access Dashboard</button>
+    </div>
+  </div>
+  <div id="adminContent" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-family:'Syne',sans-serif">Admin Dashboard</h2>
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('adminContent').style.display='none';document.getElementById('adminLogin').style.display='block'">Lock</button>
+    </div>
+    <div class="admin-grid" id="adminGrid"></div>
+    <div class="admin-orders" id="adminOrders"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV (logged in) -->
+<div id="bottomNav">
+  <div class="bnav">
+    <div class="bnav-item active" onclick="showPage('heroPage',this)" id="bnav-home">
+      <div class="bnav-icon">🏠</div><div class="bnav-label">Home</div>
+    </div>
+    <div class="bnav-item" onclick="showPage('dashPage',this)" id="bnav-wallet">
+      <div class="bnav-icon">👛</div><div class="bnav-label">Wallet</div>
+    </div>
+    <div class="bnav-item" onclick="showPage('ordersPage',this)" id="bnav-orders">
+      <div class="bnav-icon">📋</div><div class="bnav-label">Orders</div>
+    </div>
+    <div class="bnav-item" onclick="showPage('servicesPage',this)" id="bnav-services">
+      <div class="bnav-icon">💼</div><div class="bnav-label">Services</div>
+    </div>
+    <div class="bnav-item" onclick="showPage('adminPage',this)" id="bnav-admin">
+      <div class="bnav-icon">⚙️</div><div class="bnav-label">Admin</div>
+    </div>
+  </div>
+</div>
+
+<!-- FUND MODAL -->
+<div class="modal-overlay" id="fundModal">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeFund()">✕</button>
+    <h3>Fund Wallet</h3>
+    <div class="input-group"><label>Amount (₦)</label><input class="inp" id="fundAmt" type="number" placeholder="Min ₦100" min="100"/></div>
+    <div class="amount-grid" style="margin-bottom:16px">
+      <div class="amt-btn" onclick="setFund(500)">₦500</div>
+      <div class="amt-btn" onclick="setFund(1000)">₦1,000</div>
+      <div class="amt-btn" onclick="setFund(2000)">₦2,000</div>
+      <div class="amt-btn" onclick="setFund(5000)">₦5,000</div>
+      <div class="amt-btn" onclick="setFund(10000)">₦10,000</div>
+      <div class="amt-btn" onclick="setFund(20000)">₦20,000</div>
+    </div>
+    <button class="cta-btn" onclick="initFund()">Pay with Paystack</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let token = localStorage.getItem('as_token') || '';
+let user = JSON.parse(localStorage.getItem('as_user') || 'null');
+let selectedNetwork = 'MTN';
+let selectedAmt = 200;
+let currentType = 'airtime';
+let selectedPlan = null;
+let adminKey = '';
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  if (token && user) initLoggedIn();
+  // Check if returned from Paystack
+  const urlParams = new URLSearchParams(window.location.search);
+  const ref = urlParams.get('ref');
+  if (ref && token) verifyPayment(ref);
+});
+
+function initLoggedIn() {
+  document.getElementById('authBtn').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'inline-block';
+  document.getElementById('walletBadge').style.display = 'flex';
+  document.getElementById('bottomNav').style.display = 'block';
+  updateWalletDisplay(user.wallet || 0);
+  refreshMe();
+}
+
+async function refreshMe() {
+  try {
+    const r = await api('/api/me');
+    if (r.success) {
+      user = r.user;
+      localStorage.setItem('as_user', JSON.stringify(user));
+      updateWalletDisplay(user.wallet);
+    }
+  } catch {}
+}
+
+function updateWalletDisplay(w) {
+  const v = parseFloat(w || 0).toLocaleString('en-NG', {minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('navWallet').textContent = v;
+  document.getElementById('walletAmt').textContent = v;
+}
+
+// ── ROUTING ────────────────────────────────────────────────────────────────────
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (id === 'dashPage') loadDashboard();
+  if (id === 'ordersPage') loadOrders();
+}
+
+// ── AUTH ───────────────────────────────────────────────────────────────────────
+function showAuthTab(tab, el) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPass').value;
+  if (!email || !password) return toast('Fill all fields', '#ff5252');
+  const r = await api('/api/login', { email, password });
+  if (!r.success) return toast(r.message, '#ff5252');
+  token = r.token; user = r.user;
+  localStorage.setItem('as_token', token);
+  localStorage.setItem('as_user', JSON.stringify(user));
+  initLoggedIn();
+  showPage('heroPage');
+  toast('Welcome back, ' + user.name.split(' ')[0] + '!');
+}
+
+async function doRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const password = document.getElementById('regPass').value;
+  const referral_code = document.getElementById('regRef').value.trim();
+  if (!name || !email || !password) return toast('Fill all required fields', '#ff5252');
+  if (password.length < 6) return toast('Password must be at least 6 characters', '#ff5252');
+  const r = await api('/api/register', { name, email, phone, password, referral_code });
+  if (!r.success) return toast(r.message, '#ff5252');
+  token = r.token; user = r.user;
+  localStorage.setItem('as_token', token);
+  localStorage.setItem('as_user', JSON.stringify(user));
+  initLoggedIn();
+  showPage('heroPage');
+  toast('Account created! Welcome ' + user.name.split(' ')[0]);
+}
+
+function logout() {
+  token = ''; user = null;
+  localStorage.removeItem('as_token');
+  localStorage.removeItem('as_user');
+  document.getElementById('authBtn').style.display = 'inline-block';
+  document.getElementById('logoutBtn').style.display = 'none';
+  document.getElementById('walletBadge').style.display = 'none';
+  document.getElementById('bottomNav').style.display = 'none';
+  showPage('heroPage');
+  toast('Logged out');
+}
+
+// ── NETWORK / TYPE ─────────────────────────────────────────────────────────────
+function selectNetwork(net, el) {
+  selectedNetwork = net;
+  document.querySelectorAll('.net-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  if (currentType === 'data') loadPlans();
+}
+
+function switchType(type, el) {
+  currentType = type;
+  document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('airtimePanel').style.display = type === 'airtime' ? 'block' : 'none';
+  document.getElementById('dataPanel').style.display = type === 'data' ? 'block' : 'none';
+  if (type === 'data') loadPlans();
+}
+
+function selectAmt(amt, el) {
+  selectedAmt = amt;
+  document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('customAmt').value = '';
+}
+
+function customAmount(v) {
+  selectedAmt = parseInt(v) || 0;
+  document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
+}
+
+// ── DATA PLANS ─────────────────────────────────────────────────────────────────
+async function loadPlans() {
+  const sel = document.getElementById('planSelect');
+  sel.innerHTML = '<option>Loading plans...</option>';
+  try {
+    const r = await api('/api/data-plans/' + selectedNetwork.toLowerCase(), null, 'GET');
+    sel.innerHTML = '';
+    if (r.success && r.plans && r.plans.length) {
+      r.plans.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.dataplan_id || p.id;
+        opt.textContent = `${p.plan || p.data_plan} — ₦${p.plan_amount || p.price}`;
+        opt.dataset.amount = p.plan_amount || p.price;
+        opt.dataset.name = p.plan || p.data_plan;
+        sel.appendChild(opt);
+      });
+      planChanged(sel);
+    } else {
+      sel.innerHTML = '<option>No plans available</option>';
+    }
+  } catch {
+    sel.innerHTML = '<option>Error loading plans</option>';
+  }
+}
+
+function planChanged(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  selectedPlan = opt ? { id: opt.value, amount: parseFloat(opt.dataset.amount || 0), name: opt.dataset.name || opt.textContent } : null;
+}
+
+// ── BUY ────────────────────────────────────────────────────────────────────────
+async function buyAirtime() {
+  if (!token) { showPage('authPage'); return toast('Login to buy airtime', '#fbbf24'); }
+  const phone = document.getElementById('airtimePhone').value.trim();
+  if (!phone || phone.length < 10) return toast('Enter a valid phone number', '#ff5252');
+  if (!selectedAmt || selectedAmt < 50) return toast('Minimum airtime is ₦50', '#ff5252');
+  const btn = document.querySelector('#airtimePanel .cta-btn');
+  btn.disabled = true; btn.textContent = 'Processing...';
+  const r = await api('/api/buy/airtime', { network: selectedNetwork, phone, amount: selectedAmt });
+  btn.disabled = false; btn.textContent = 'Buy Airtime Now';
+  if (r.success) {
+    updateWalletDisplay(r.wallet);
+    toast(r.message);
+  } else {
+    toast(r.message || 'Purchase failed', '#ff5252');
+  }
+}
+
+async function buyData() {
+  if (!token) { showPage('authPage'); return toast('Login to buy data', '#fbbf24'); }
+  const phone = document.getElementById('dataPhone').value.trim();
+  if (!phone || phone.length < 10) return toast('Enter a valid phone number', '#ff5252');
+  if (!selectedPlan) return toast('Select a data plan', '#ff5252');
+  const btn = document.querySelector('#dataPanel .cta-btn');
+  btn.disabled = true; btn.textContent = 'Processing...';
+  const r = await api('/api/buy/data', {
+    network: selectedNetwork, phone,
+    plan_id: selectedPlan.id, plan_name: selectedPlan.name, amount: selectedPlan.amount
+  });
+  btn.disabled = false; btn.textContent = 'Buy Data Now';
+  if (r.success) {
+    updateWalletDisplay(r.wallet);
+    toast(r.message);
+  } else {
+    toast(r.message || 'Purchase failed', '#ff5252');
+  }
+}
+
+// ── WALLET ─────────────────────────────────────────────────────────────────────
+function openFund() { document.getElementById('fundModal').classList.add('show'); }
+function closeFund() { document.getElementById('fundModal').classList.remove('show'); }
+function setFund(v) { document.getElementById('fundAmt').value = v; }
+
+async function initFund() {
+  const amount = parseFloat(document.getElementById('fundAmt').value);
+  if (!amount || amount < 100) return toast('Minimum deposit is ₦100', '#ff5252');
+  const r = await api('/api/wallet/init', { amount });
+  if (r.success) {
+    window.location.href = r.url;
+  } else {
+    toast(r.message || 'Failed to initialize payment', '#ff5252');
+  }
+}
+
+async function verifyPayment(ref) {
+  const r = await api('/api/wallet/verify', { ref });
+  if (r.success) {
+    updateWalletDisplay(r.wallet);
+    toast(r.message || 'Wallet funded!');
+    window.history.replaceState({}, '', '/');
+    showPage('dashPage');
+    loadDashboard();
+  }
+}
+
+// ── DASHBOARD ──────────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  await refreshMe();
+  const r = await api('/api/transactions', null, 'GET');
+  const list = document.getElementById('txnList');
+  if (!r.success || !r.transactions.length) {
+    list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px">No transactions yet</p>';
+    return;
+  }
+  list.innerHTML = r.transactions.map(t => `
+    <div class="txn-item">
+      <div>
+        <div class="txn-desc">${t.desc}</div>
+        <div class="txn-date">${new Date(t.created_at).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="txn-amt ${['deposit','referral','credit'].includes(t.type)?'credit':'debit'}">
+          ${['deposit','referral','credit'].includes(t.type)?'+':'-'}₦${Number(t.amount).toLocaleString()}
+        </div>
+        <span class="status-badge ${t.status}">${t.status}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── ORDERS ─────────────────────────────────────────────────────────────────────
+async function loadOrders() {
+  const r = await api('/api/orders', null, 'GET');
+  const list = document.getElementById('ordersList');
+  if (!r.success || !r.orders.length) {
+    list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:30px">No orders yet. Buy airtime or data to get started!</p>';
+    return;
+  }
+  list.innerHTML = r.orders.map(o => `
+    <div class="order-card">
+      <div class="order-card-top">
+        <div>
+          <div class="order-card-title">${o.network} ${o.type === 'airtime' ? 'Airtime' : o.plan}</div>
+          <div class="order-card-sub">📱 ${o.phone} · ${new Date(o.created_at).toLocaleDateString('en-NG',{day:'numeric',month:'short'})}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="order-card-amt">₦${Number(o.amount).toLocaleString()}</div>
+          <span class="status-badge ${o.status}">${o.status}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── ADMIN ──────────────────────────────────────────────────────────────────────
+async function loadAdmin() {
+  adminKey = document.getElementById('adminPassInput').value;
+  const r = await api('/api/admin/stats', { key: adminKey });
+  if (!r.success) return toast('Wrong admin password', '#ff5252');
+
+  document.getElementById('adminLogin').style.display = 'none';
+  document.getElementById('adminContent').style.display = 'block';
+
+  const s = r.stats;
+  document.getElementById('adminGrid').innerHTML = `
+    <div class="admin-stat"><div class="lbl">Total Revenue</div><div class="val">₦${Number(s.totalRevenue).toLocaleString()}</div></div>
+    <div class="admin-stat"><div class="lbl">Total Users</div><div class="val">${s.totalUsers}</div></div>
+    <div class="admin-stat"><div class="lbl">Total Orders</div><div class="val">${s.totalOrders}</div></div>
+    <div class="admin-stat"><div class="lbl">Wallet Balances</div><div class="val">₦${Number(s.totalWallets).toLocaleString()}</div></div>
+  `;
+
+  document.getElementById('adminOrders').innerHTML = `
+    <div class="admin-orders-header">Recent Orders (${s.recentOrders.length})</div>
+    ${s.recentOrders.map(o => `
+      <div class="order-row">
+        <div class="order-top">
+          <span><strong>${o.name || 'User'}</strong> · ${o.network} ${o.type}</span>
+          <span style="color:var(--green);font-weight:700">₦${Number(o.amount).toLocaleString()}</span>
+        </div>
+        <div class="order-sub">${o.phone} · ${o.plan || ''} · <span class="status-badge ${o.status}">${o.status}</span></div>
+      </div>
+    `).join('')}
+  `;
+}
+
+// ── REFERRAL ───────────────────────────────────────────────────────────────────
+function copyReferral() {
+  if (!user) return;
+  const link = `${window.location.origin}?ref=${user.referral_code}`;
+  navigator.clipboard.writeText(link).then(() => toast('Referral link copied!'));
+}
+
+// ── API HELPER ─────────────────────────────────────────────────────────────────
+async function api(path, body, method) {
+  const opts = {
+    method: method || (body ? 'POST' : 'GET'),
+    headers: { 'Content-Type': 'application/json' }
+  };
+  if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+  if (body) opts.body = JSON.stringify(body);
+  try {
+    const r = await fetch(path, opts);
+    return await r.json();
+  } catch (e) {
+    return { success: false, message: 'Network error' };
+  }
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────────
+function toast(msg, bg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = bg || 'var(--green)';
+  t.style.color = bg ? '#fff' : '#000';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function showServicesPage() {
+  showPage('servicesPage', document.getElementById('bnav-services'));
+  document.getElementById('bottomNav').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+// ── SERVICES ───────────────────────────────────────────────────────────────────
+const serviceInfo = {
+  web:       { icon: '🌐', title: 'Web Design Quote',      sub: 'Tell us about your website project' },
+  app:       { icon: '📱', title: 'App Development Quote', sub: 'Tell us about your app idea' },
+  design:    { icon: '🎨', title: 'Graphic Design Quote',  sub: 'Tell us what you need designed' },
+  marketing: { icon: '📣', title: 'Digital Marketing Quote', sub: 'Tell us about your marketing goals' }
+};
+let currentService = 'web';
+
+function openServiceModal(type) {
+  currentService = type;
+  const info = serviceInfo[type];
+  document.getElementById('sModalIcon').textContent = info.icon;
+  document.getElementById('sModalTitle').textContent = info.title;
+  document.getElementById('sModalSub').textContent = info.sub;
+  document.getElementById('serviceModal').classList.add('show');
+}
+function closeServiceModal() {
+  document.getElementById('serviceModal').classList.remove('show');
+}
+function sendServiceQuote() {
+  const name = document.getElementById('sName').value.trim();
+  const phone = document.getElementById('sPhone').value.trim();
+  const desc = document.getElementById('sDesc').value.trim();
+  const budget = document.getElementById('sBudget').value;
+  if (!name || !phone) return toast('Enter your name and WhatsApp number', '#ff5252');
+  const info = serviceInfo[currentService];
+  const msg = `Hi AmazingSubz! I need ${info.title}%0A%0AName: ${name}%0APhone: ${phone}%0AProject: ${desc || 'Not specified'}%0ABudget: ${budget || 'Not specified'}`;
+  window.open(`https://wa.me/2347037339308?text=${msg}`, '_blank');
+  closeServiceModal();
+  toast('Opening WhatsApp...');
+}
+function openWA() {
+  window.open('https://wa.me/2347037339308?text=Hi AmazingSubz! I need help with a service.', '_blank');
+}
+
+// Auto-fill referral from URL
+const urlRef = new URLSearchParams(window.location.search).get('ref');
+if (urlRef) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const refInput = document.getElementById('regRef');
+    if (refInput) refInput.value = urlRef;
+    showPage('authPage');
+    document.querySelectorAll('.auth-tab')[1].click();
+  });
+}
+</script>
+</body>
+</html>
+
