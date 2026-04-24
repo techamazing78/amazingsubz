@@ -3,14 +3,12 @@ const express=require('express');
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const axios=require('axios');
-const crypto=require('crypto');
 const path=require('path');
 const low=require('lowdb');
 const FileSync=require('lowdb/adapters/FileSync');
 
 const adapter=new FileSync('db.json');
 const db=low(adapter);
-
 db.defaults({users:[],transactions:[],orders:[]}).write();
 
 const app=express();
@@ -108,16 +106,23 @@ app.post('/api/buy/airtime',auth,async(req,res)=>{
     if(!network||!phone||!amount||amount<50)return res.json({success:false,message:'Invalid request'});
     const user=db.get('users').find({id:req.user.id}).value();
     if((user.wallet||0)<amount)return res.json({success:false,message:'Insufficient wallet balance'});
-    db.get('users').find({id:user.id}).assign({wallet:user.wallet-amount}).write();
+    const newWallet=user.wallet-amount;
+    db.get('users').find({id:user.id}).assign({wallet:newWallet}).write();
     const ref=genRef('AIR');
     try{
       const r=await axios.post(`${CDH}/topup/`,{api_key:CDH_KEY,network:network.toLowerCase(),mobile_number:phone,amount,Ported_number:true,airtime_type:'VTU'},{timeout:30000});
-      if(r.data.Status!=='successful'){db.get('users').find({id:user.id}).assign({wallet:user.wallet}).write();return res.json({success:false,message:r.data.api_response||'Failed'});}
-    }catch(e){db.get('users').find({id:user.id}).assign({wallet:user.wallet}).write();return res.json({success:false,message:'VTU error'});}
+      if(r.data.Status!=='successful'){
+        db.get('users').find({id:user.id}).assign({wallet:user.wallet}).write();
+        return res.json({success:false,message:r.data.api_response||'Airtime purchase failed'});
+      }
+    }catch(e){
+      db.get('users').find({id:user.id}).assign({wallet:user.wallet}).write();
+      return res.json({success:false,message:'VTU service error. Try again.'});
+    }
     db.get('orders').push({id:Date.now(),user_id:user.id,network,phone,type:'airtime',plan:`${network} Airtime`,amount,status:'success',ref,created_at:new Date().toISOString()}).write();
     db.get('transactions').push({id:Date.now()+1,user_id:user.id,type:'airtime',amount,desc:`${network} Airtime to ${phone}`,status:'success',ref,created_at:new Date().toISOString()}).write();
     const updated=db.get('users').find({id:user.id}).value();
-    res.json({success:true,message:`N${amount} ${network} airtime sent!`,wallet:updated.wallet});
+    res.json({success:true,message:`N${amount} ${network} airtime sent to ${phone}!`,wallet:updated.wallet});
   }catch(e){res.json({success:false,message:e.message});}
 });
 
@@ -135,13 +140,20 @@ app.post('/api/buy/data',auth,async(req,res)=>{
     if(!network||!phone||!plan_id)return res.json({success:false,message:'Fill all fields'});
     const user=db.get('users').find({id:req.user.id}).value();
     if((user.wallet||0)<amount)return res.json({success:false,message:'Insufficient wallet balance'});
-    db.get('users').find({id:user.id}).assign({wallet:user.wallet-amount}).write();
+    const newWallet=user.wallet-amount;
+    db.get('users').find({id:user.id}).assign({wallet:newWallet}).write();
     const ref=genRef('DAT');
     const nm={mtn:1,glo:2,airtel:3,'9mobile':4};
     try{
       const r=await axios.post(`${CDH}/data/`,{api_key:CDH_KEY,network:nm[network.toLowerCase()]||1,mobile_number:phone,plan:plan_id,Ported_number:true},{timeout:30000});
-      if(r.data.Status!=='successful'){db.get('users').find({id:user.id}).assign({wallet:user.wallet}).write();return res.json({success:false,message:r.data.api_response||'Failed'});}
-    }catch(e){db.get('users').find({id:user.id}).assign({wallet:user.wallet}).write();return res.json({success:false,message:'VTU error'});}
+      if(r.data.Status!=='successful'){
+        db.get('users').find({id:user.id}).assign({wallet:user.wallet}).write();
+        return res.json({success:false,message:r.data.api_response||'Data purchase failed'});
+      }
+    }catch(e){
+      db.get('users').find({id:user.id}).assign({wallet:user.wallet}).write();
+      return res.json({success:false,message:'VTU service error. Try again.'});
+    }
     db.get('orders').push({id:Date.now(),user_id:user.id,network,phone,type:'data',plan:plan_name,amount,status:'success',ref,created_at:new Date().toISOString()}).write();
     db.get('transactions').push({id:Date.now()+1,user_id:user.id,type:'data',amount,desc:`${network} ${plan_name} to ${phone}`,status:'success',ref,created_at:new Date().toISOString()}).write();
     const updated=db.get('users').find({id:user.id}).value();
@@ -161,11 +173,15 @@ app.post('/api/admin/stats',(req,res)=>{
   const txns=db.get('transactions').value();
   const totalRevenue=txns.filter(t=>t.status==='success'&&t.type==='deposit').reduce((s,t)=>s+t.amount,0);
   const totalWallets=users.reduce((s,u)=>s+(u.wallet||0),0);
-  const recentOrders=db.get('orders').sortBy('created_at').reverse().take(20).value().map(o=>{const u=users.find(u=>u.id===o.user_id);return{...o,name:u?.name,email:u?.email};});
+  const recentOrders=db.get('orders').sortBy('created_at').reverse().take(20).value().map(o=>{
+    const u=users.find(u=>u.id===o.user_id);
+    return{...o,name:u?.name,email:u?.email};
+  });
   res.json({success:true,stats:{totalUsers:users.length,totalOrders:orders.length,totalRevenue,totalWallets,recentOrders}});
 });
 
 app.get('*',(req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
 
-app.listen(PORT,()=>console.log(`Amazing Subz running on port ${PORT}`));
+const PORT=process.env.PORT||3000;
 app.listen(PORT,'0.0.0.0',()=>console.log(`Amazing Subz running on port ${PORT}`));
+
